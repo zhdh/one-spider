@@ -7,6 +7,7 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.selector.Html;
 
 /**
  * one spider
@@ -20,9 +21,12 @@ public class OneStoryPageProcessor implements PageProcessor{
 
     @Override
     public void process(Page page) {
-        log.info("content: " + page.getHtml().toString());
+        String body = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
+        Html html = Html.create(body);
+        String type = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[1]/text()").toString().trim();
+        String day = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[2]/text()").toString().trim();
+        log.info("type: " + type + " day :" + day);
     }
-
     @Override
     public Site getSite() {
         return site;
