@@ -24,8 +24,11 @@ public class OneStoryPageProcessor implements PageProcessor{
         String body = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
         Html html = Html.create(body);
         String type = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[1]/text()").toString().trim();
+        String date = html.xpath("////*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[3]/text()").toString().trim();
         String day = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[2]/text()").toString().trim();
-        log.info("type: " + type + " day :" + day);
+        String word = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[2]/a/text()").toString().trim();
+        String imageUrl = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/a").$("img","src").toString().trim();
+        log.info("type: " + type + " date: "+ date + " day :" + day + " word: " + word + " image: " + imageUrl);
     }
     @Override
     public Site getSite() {
