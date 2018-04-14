@@ -30,6 +30,7 @@ public class OneStoryPageProcessor implements PageProcessor{
         String imageUrl = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/a").$("img","src").toString().trim();
         log.info("type: " + type + " date: "+ date + " day :" + day + " word: " + word + " image: " + imageUrl);
     }
+
     @Override
     public Site getSite() {
         return site;
