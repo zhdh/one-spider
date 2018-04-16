@@ -55,9 +55,15 @@ public class OneStoryPageProcessor implements PageProcessor {
         if (ARTICLE_PAGE.equals(page.getUrl().toString())) {
             String articleBody = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(articleBody);
-            String abstractContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[1]/div/div/text()").toString();
+            String abstractContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[1]/div/div/text()").toString().trim();
+            String title = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h2/text()").toString().trim();
+            String author = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/p[1]/text()").toString().trim();
+
             log.info("Article abstract: " + abstractContent);
+            log.info("Article title: " + title);
+            log.info("Article author: " + author);
         }
+
 
     }
 
