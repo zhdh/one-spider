@@ -28,7 +28,9 @@ public class OneStoryPageProcessor implements PageProcessor{
         String day = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[2]/text()").toString().trim();
         String word = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[2]/a/text()").toString().trim();
         String imageUrl = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/a").$("img","src").toString().trim();
-        log.info("type: " + type + " date: "+ date + " day :" + day + " word: " + word + " image: " + imageUrl);
+        log.info("type: " + type + " date: "+ date + " " + day + " word: " + word );
+        String imageName = imageUrl.split("/")[3] + ".jpg";
+        String outputPath = System.getProperty("user.dir") + "\\image";
     }
 
     @Override
