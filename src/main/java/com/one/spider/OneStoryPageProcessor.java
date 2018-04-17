@@ -64,18 +64,18 @@ public class OneStoryPageProcessor implements PageProcessor {
             log.info("Article author: " + author);
             log.info("Article content: " + content);
         }
-
+        // add question page
         page.addTargetRequest(questionURL);
-
+        // question
         if(QUESTION_PAGE.equals(page.getUrl().toString())){
             String questionBody = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(questionBody);
             String title =  html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
             String abstractContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
             String content = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[4]").toString().trim();
-            System.out.println(title);
-            System.out.println(abstractContent);
-            System.out.println(content);
+            log.info("Question title: " + title);
+            log.info("Question abstract: " + abstractContent);
+            log.info("Question content: " + content);
         }
 
 
