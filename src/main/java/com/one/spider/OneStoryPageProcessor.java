@@ -75,6 +75,7 @@ public class OneStoryPageProcessor implements PageProcessor {
             String content = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[4]").toString().trim();
             System.out.println(title);
             System.out.println(abstractContent);
+            System.out.println(content);
         }
 
 
