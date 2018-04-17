@@ -78,7 +78,6 @@ public class OneStoryPageProcessor implements PageProcessor {
             log.info("Question content: " + content);
         }
 
-
     }
 
     @Override
