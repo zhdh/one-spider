@@ -1,6 +1,7 @@
 package com.one.spider;
 
 
+import com.one.utils.DBUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -8,6 +9,10 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * one spider
@@ -29,6 +34,14 @@ public class OneStoryPageProcessor implements PageProcessor {
     @Override
     public void process(Page page) {
         String type, date, day, word, imageURL, articleTitle, articleURL = "", questionURL = "", questionTitle, imageName, outputPath;
+        Connection connection = DBUtils.getConnection();
+        Statement stmt = null;
+        try {
+            stmt = connection.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        StringBuffer sql = new StringBuffer("INSERT INTO t_one VALUES (NULL, \"type\", \"date\", \"word\", \"imageURL\",\"articleTitle\",\"articleAbstract\",\"articleAuthor\",\"content\",\"title\",\"abstric\",\"content>\",CURRENT_TIMESTAMP);");
         if (page.getUrl().toString().equals(HOME_PAGE)) {
             String body = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(body);
