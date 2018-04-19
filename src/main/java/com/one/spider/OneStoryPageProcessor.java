@@ -31,9 +31,20 @@ public class OneStoryPageProcessor implements PageProcessor {
 
     private static String QUESTION_PAGE = null;
 
+    private String type = null;
+    private String date = null;
+    private String word = null;
+    private String articleTitle = null;
+    private String articleAbstract = null;
+    private String articleAuthor = null;
+    private String articleContent = null;
+    private String articleURL = null;
+    private String questionURL = null;
+    private String questionTitle = null;
+    private String outputPath = null;
+
     @Override
     public void process(Page page) {
-        String type = null, date = null, day = null, word = null, imageURL = null, articleTitle = null, articleAbstract = null,articleAuthor = null, articleContent = null,articleURL = null, questionURL = null, questionTitle = null,questionAbstract = null,questionContent =null,imageName =null, outputPath = null;
         Connection connection = DBUtils.getConnection();
         Statement stmt = null;
         try {
@@ -41,20 +52,19 @@ public class OneStoryPageProcessor implements PageProcessor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         if (page.getUrl().toString().equals(HOME_PAGE)) {
             String body = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(body);
             type = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[1]/text()").toString().trim();
             date = html.xpath("////*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[3]/text()").toString().trim();
-            day = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[2]/text()").toString().trim();
+            String day = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[1]/p[2]/text()").toString().trim();
             word = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/div[2]/div[2]/a/text()").toString().trim();
-            imageURL = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/a").$("img", "src").toString().trim();
+            String imageURL = html.xpath("//*[@id=\"carousel-one\"]/div/div[1]/a").$("img", "src").toString().trim();
             articleTitle = html.xpath("//*[@id=\"main-container\"]/div[1]/div[2]/div/div/div[1]/div/p[2]/a/text()").toString().trim();
             articleURL = html.xpath("//*[@id=\"main-container\"]/div[1]/div[2]/div/div/div[1]/div/p[2]/").$("a", "href").toString().trim();
             questionURL = html.xpath("//*[@id=\"main-container\"]/div[1]/div[2]/div/div/div[2]/div/p[2]/").$("a", "href").toString().trim();
             questionTitle = html.xpath("//*[@id=\"main-container\"]/div[1]/div[2]/div/div/div[2]/div/p[2]/a/text()").toString().trim();
-            imageName = imageURL.split("/")[3] + ".jpg";
+            String imageName = imageURL.split("/")[3] + ".jpg";
             outputPath = System.getProperty("user.dir") + "\\image";
             ARTICLE_PAGE = articleURL;
             QUESTION_PAGE = questionURL;
@@ -68,29 +78,23 @@ public class OneStoryPageProcessor implements PageProcessor {
         if (ARTICLE_PAGE.equals(page.getUrl().toString())) {
             String articleBody = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(articleBody);
-            String abstractContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[1]/div/div/text()").toString().trim();
-            String title = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h2/text()").toString().trim();
-            String author = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/p[1]/text()").toString().trim();
-            String content = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[2]").toString().trim();
-            log.info("Article abstract: " + abstractContent);
-            log.info("Article title: " + title);
-            log.info("Article author: " + author);
-            log.info("Article content: " + content);
+            articleAbstract = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[1]/div/div/text()").toString().trim();
+            articleTitle = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h2/text()").toString().trim();
+            articleAuthor = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/p[1]/text()").toString().trim();
+            articleContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[2]").toString().trim().replace("\"", "").replace("\n", "");
         }
         // add question page
         page.addTargetRequest(questionURL);
         // question
-        if(QUESTION_PAGE.equals(page.getUrl().toString())){
+        if (QUESTION_PAGE.equals(page.getUrl().toString())) {
             String questionBody = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(questionBody);
-            String title =  html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
-            String abstractContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
-            String content = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[4]").toString().trim();
-            log.info("Question title: " + title);
-            log.info("Question abstract: " + abstractContent);
-            log.info("Question content: " + content);
+            String title = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
+            String questionAbstract = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
+            String questionContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[4]").toString().trim().replace("\"", "").replace("\n", "");
+            String sql = "INSERT INTO t_one VALUES (NULL, \"" + type + "\", \"" + date + "\", \"" + word + "\", \"" + outputPath + "\",\"" + articleTitle + "\",\"" + articleAbstract + "\",\"" + articleAuthor + "\",\"" + articleContent + "\",\"" + questionTitle + "\",\"" + questionAbstract + "\",\"" + questionContent + "\",CURRENT_TIMESTAMP);";
+            System.out.println(sql);
         }
-        String sql = new String("INSERT INTO t_one VALUES (NULL, \""+type+"\", \""+date+"\", \""+word+"\", \""+imageURL+"\",\""+articleTitle+"\",\""+articleAbstract+"\",\""+articleAuthor+"\",\""+articleContent+"\",\""+questionTitle+"\",\""+questionAbstract+"\",\""+questionContent+"\",CURRENT_TIMESTAMP);");
     }
 
     @Override
@@ -101,5 +105,6 @@ public class OneStoryPageProcessor implements PageProcessor {
     public static void main(String[] args) {
         String url = "http://wufazhuce.com/";
         Spider.create(new OneStoryPageProcessor()).addUrl(url).thread(1).run();
+
     }
 }
