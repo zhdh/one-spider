@@ -33,7 +33,7 @@ public class OneStoryPageProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
-        String type, date, day, word, imageURL, articleTitle, articleURL = "", questionURL = "", questionTitle, imageName, outputPath;
+        String type = null, date = null, day = null, word = null, imageURL = null, articleTitle = null, articleAbstract = null,articleAuthor = null, articleContent = null,articleURL = null, questionURL = null, questionTitle = null,questionAbstract = null,questionContent =null,imageName =null, outputPath = null;
         Connection connection = DBUtils.getConnection();
         Statement stmt = null;
         try {
@@ -41,7 +41,7 @@ public class OneStoryPageProcessor implements PageProcessor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        StringBuffer sql = new StringBuffer("INSERT INTO t_one VALUES (NULL, \"type\", \"date\", \"word\", \"imageURL\",\"articleTitle\",\"articleAbstract\",\"articleAuthor\",\"content\",\"title\",\"abstric\",\"content>\",CURRENT_TIMESTAMP);");
+
         if (page.getUrl().toString().equals(HOME_PAGE)) {
             String body = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(body);
@@ -90,7 +90,7 @@ public class OneStoryPageProcessor implements PageProcessor {
             log.info("Question abstract: " + abstractContent);
             log.info("Question content: " + content);
         }
-
+        String sql = new String("INSERT INTO t_one VALUES (NULL, \""+type+"\", \""+date+"\", \""+word+"\", \""+imageURL+"\",\""+articleTitle+"\",\""+articleAbstract+"\",\""+articleAuthor+"\",\""+articleContent+"\",\""+questionTitle+"\",\""+questionAbstract+"\",\""+questionContent+"\",CURRENT_TIMESTAMP);");
     }
 
     @Override
