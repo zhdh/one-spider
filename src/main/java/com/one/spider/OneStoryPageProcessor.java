@@ -1,7 +1,7 @@
 package com.one.spider;
 
-
 import com.one.utils.DBUtils;
+import com.one.utils.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -65,7 +65,8 @@ public class OneStoryPageProcessor implements PageProcessor {
             questionURL = html.xpath("//*[@id=\"main-container\"]/div[1]/div[2]/div/div/div[2]/div/p[2]/").$("a", "href").toString().trim();
             questionTitle = html.xpath("//*[@id=\"main-container\"]/div[1]/div[2]/div/div/div[2]/div/p[2]/a/text()").toString().trim();
             String imageName = imageURL.split("/")[3] + ".jpg";
-            outputPath = System.getProperty("user.dir") + "\\image";
+            outputPath = System.getProperty("user.dir").trim() + "\\image\\" + imageName;
+            ImageUtils.downLoadImg(imageURL, outputPath);
             ARTICLE_PAGE = articleURL;
             QUESTION_PAGE = questionURL;
             log.info("type: " + type + " date: " + date + " " + day + " word: " + word);
@@ -92,8 +93,20 @@ public class OneStoryPageProcessor implements PageProcessor {
             String title = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
             String questionAbstract = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
             String questionContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[4]").toString().trim().replace("\"", "").replace("\n", "");
-            String sql = "INSERT INTO t_one VALUES (NULL, \"" + type + "\", \"" + date + "\", \"" + word + "\", \"" + outputPath + "\",\"" + articleTitle + "\",\"" + articleAbstract + "\",\"" + articleAuthor + "\",\"" + articleContent + "\",\"" + questionTitle + "\",\"" + questionAbstract + "\",\"" + questionContent + "\",CURRENT_TIMESTAMP);";
-            System.out.println(sql);
+            String sql = "INSERT INTO t_one VALUES (NULL,\"" + type + "\", \"" + date + "\", \"" + word + "\", \"" + outputPath + "\",\"" + articleTitle + "\",\"" + articleAbstract + "\",\"" + articleAuthor + "\",\"" + articleContent + "\",\"" + questionTitle + "\",\"" + questionAbstract + "\",\"" + questionContent + "\",CURRENT_TIMESTAMP);";
+            int count = 0;
+            try {
+                assert stmt != null;
+                count = stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (count == 1) {
+                log.info("insert successful: " + sql);
+            } else {
+                log.info("insert failure: " + sql);
+            }
+
         }
     }
 
@@ -102,9 +115,9 @@ public class OneStoryPageProcessor implements PageProcessor {
         return site;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        DBUtils.createTable();
         String url = "http://wufazhuce.com/";
         Spider.create(new OneStoryPageProcessor()).addUrl(url).thread(1).run();
-
     }
 }
