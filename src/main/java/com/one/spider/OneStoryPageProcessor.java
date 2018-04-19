@@ -90,7 +90,6 @@ public class OneStoryPageProcessor implements PageProcessor {
         if (QUESTION_PAGE.equals(page.getUrl().toString())) {
             String questionBody = page.getHtml().regex("<body[^>]*>([\\s\\S]*)<\\/body>").toString();
             Html html = Html.create(questionBody);
-            String title = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
             String questionAbstract = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/h4[1]/text()").toString().trim();
             String questionContent = html.xpath("//*[@id=\"main-container\"]/div/div/div/div/div[4]").toString().trim().replace("\"", "").replace("\n", "");
             String sql = "INSERT INTO t_one VALUES (NULL,\"" + type + "\", \"" + date + "\", \"" + word + "\", \"" + outputPath + "\",\"" + articleTitle + "\",\"" + articleAbstract + "\",\"" + articleAuthor + "\",\"" + articleContent + "\",\"" + questionTitle + "\",\"" + questionAbstract + "\",\"" + questionContent + "\",CURRENT_TIMESTAMP);";
@@ -106,7 +105,6 @@ public class OneStoryPageProcessor implements PageProcessor {
             } else {
                 log.info("insert failure: " + sql);
             }
-
         }
     }
 
